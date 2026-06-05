@@ -18,6 +18,8 @@ typedef struct Trie
     size_t wordCount;
 }Trie;
 
+TrieNode* trie_node_create(void);
+
 Trie* trie_create(void);
 
 void trie_destroy(Trie* trie);

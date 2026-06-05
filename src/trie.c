@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include "../include/trie.h"
 
-static TrieNode* trie_node_create(void)
+TrieNode* trie_node_create(void)
 {
     TrieNode* node = (TrieNode*)calloc(1, sizeof(TrieNode));
 
