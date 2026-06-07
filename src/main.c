@@ -1,125 +1,50 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
+#include "../include/game.h"
+#include "../include/config.h"
 #include "../include/dictionary.h"
+#include "../include/persistence.h"
 
 int main(void)
 {
-    Dictionary* dict =
-        dictionary_create("data/dictionary.txt");
+    srand((unsigned int)time(NULL));
 
-    if(dict == NULL)
+    Dictionary* dictionary =
+        dictionary_create(
+            "data/dictionary.txt"
+        );
+
+    if(dictionary == NULL)
     {
-        printf("Dictionary create failed!\n");
+        printf("Failed to create dictionary.\n");
         return 1;
     }
 
-    if(!dictionary_load(dict))
+    if(!dictionary_load(dictionary))
     {
-        printf("Dictionary load failed!\n");
+        printf("Failed to load dictionary.\n");
 
-        dictionary_destroy(dict);
+        dictionary_destroy(dictionary);
 
         return 1;
     }
 
-    printf("=====================================\n");
-    printf("INITIAL DICTIONARY TEST\n");
-    printf("=====================================\n");
+    GameState game;
 
-    printf("Words loaded: %zu\n",
-           dictionary_word_count(dict));
+    game.score = 0;
+    game.config = config_default();
+    game.dictionary = dictionary;
 
-    printf("CAT: %d\n",
-           dictionary_contains(dict, "CAT"));
+    game_menu(&game);
 
-    printf("DOG: %d\n",
-           dictionary_contains(dict, "DOG"));
+    trie_save(
+        dictionary->trie,
+        "data/trie.bin"
+    );
 
-    printf("HOUSE: %d\n",
-           dictionary_contains(dict, "HOUSE"));
-
-    printf("NOTEXIST: %d\n",
-           dictionary_contains(dict, "NOTEXIST"));
-
-    printf("\n");
-
-    printf("=====================================\n");
-    printf("CASE INSENSITIVE TEST\n");
-    printf("=====================================\n");
-
-    printf("cat: %d\n",
-           dictionary_contains(dict, "cat"));
-
-    printf("DoG: %d\n",
-           dictionary_contains(dict, "DoG"));
-
-    printf("aPpLe: %d\n",
-           dictionary_contains(dict, "aPpLe"));
-
-    printf("\n");
-
-    printf("=====================================\n");
-    printf("ADD WORD TEST\n");
-    printf("=====================================\n");
-
-    if(dictionary_add_word(dict, "NEWWORD"))
-    {
-        printf("NEWWORD added successfully\n");
-    }
-    else
-    {
-        printf("Failed to add NEWWORD\n");
-    }
-
-    printf("NEWWORD exists: %d\n",
-           dictionary_contains(dict, "NEWWORD"));
-
-    printf("Word count: %zu\n",
-           dictionary_word_count(dict));
-
-    printf("\n");
-
-    printf("=====================================\n");
-    printf("DUPLICATE TEST\n");
-    printf("=====================================\n");
-
-    if(dictionary_add_word(dict, "CAT"))
-    {
-        printf("CAT added again\n");
-    }
-    else
-    {
-        printf("Duplicate CAT detected\n");
-    }
-
-    printf("Word count: %zu\n",
-           dictionary_word_count(dict));
-
-    printf("\n");
-
-    printf("=====================================\n");
-    printf("INVALID WORD TEST\n");
-    printf("=====================================\n");
-
-    printf("CAT123 -> %d\n",
-           dictionary_add_word(dict, "CAT123"));
-
-    printf("HELLO! -> %d\n",
-           dictionary_add_word(dict, "HELLO!"));
-
-    printf("123 -> %d\n",
-           dictionary_add_word(dict, "123"));
-
-    printf("\n");
-
-    printf("=====================================\n");
-    printf("FINAL WORD COUNT\n");
-    printf("=====================================\n");
-
-    printf("Words loaded: %zu\n",
-           dictionary_word_count(dict));
-
-    dictionary_destroy(dict);
+    dictionary_destroy(dictionary);
 
     return 0;
 }
