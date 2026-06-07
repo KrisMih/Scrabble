@@ -234,10 +234,6 @@ Score:
 
 ## 📜 License
 
-Educational project developed for university coursework.
+MIT LICENSE
 
 ---
-
-<p align="center">
-    Made with ❤️ in C
-</p>
